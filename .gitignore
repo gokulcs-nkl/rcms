@@ -11,6 +11,10 @@ __pycache__/
 # /media/
 /staticfiles/
 
+# Media students: keep folder, ignore files
+media/students/*
+!media/students/.gitkeep
+
 # Environments
 .env
 .venv/
