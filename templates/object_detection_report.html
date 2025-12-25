@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+{% load custom_filters %}
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Object Detection Report | Classroom Monitoring</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f2e 0%, #1a1a4d 50%, #0f0f2e 100%);
+            color: #f7f7f7;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(20, 20, 50, 0.9);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .header h1 {
+            font-size: 2em;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .back-btn {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #0f0f2e;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.3s;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(20, 20, 50, 0.9);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .stat-card h3 {
+            color: #ffed4e;
+            margin-bottom: 10px;
+            font-size: 0.9em;
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            color: #64c8ff;
+            font-weight: 800;
+        }
+
+        .filters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(20, 20, 50, 0.9);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .filter-group label {
+            color: #ffed4e;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
+
+        .filter-group select,
+        .filter-group input {
+            padding: 10px;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            color: #fff;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .filter-btn,
+        .reset-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .filter-btn {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #0f0f2e;
+        }
+
+        .filter-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .reset-btn {
+            background: rgba(255, 255, 255, 0.1);
+            color: #d7e6ff;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .reset-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .detections-table {
+            width: 100%;
+            background: rgba(20, 20, 50, 0.9);
+            border-collapse: collapse;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .detections-table thead {
+            background: rgba(255, 215, 0, 0.15);
+        }
+
+        .detections-table th {
+            padding: 15px;
+            text-align: left;
+            color: #ffed4e;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .detections-table td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: #d7e6ff;
+        }
+
+        .detections-table tbody tr:hover {
+            background: rgba(255, 215, 0, 0.08);
+        }
+
+        .object-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .badge-mobile_phone {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+
+        .badge-laptop {
+            background: rgba(100, 200, 255, 0.2);
+            color: #64c8ff;
+        }
+
+        .badge-tablet {
+            background: rgba(144, 255, 144, 0.2);
+            color: #90ff90;
+        }
+
+        .badge-smartwatch {
+            background: rgba(255, 170, 68, 0.2);
+            color: #ffaa44;
+        }
+
+        .badge-headphones {
+            background: rgba(200, 168, 255, 0.2);
+            color: #c8a8ff;
+        }
+
+        .badge-camera {
+            background: rgba(255, 200, 124, 0.2);
+            color: #ffc87c;
+        }
+
+        .badge-other_gadget {
+            background: rgba(200, 200, 200, 0.2);
+            color: #c8c8c8;
+        }
+
+        .confidence-bar {
+            width: 100%;
+            height: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+
+        .confidence-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #64c8ff, #ffd700);
+            border-radius: 10px;
+        }
+
+        .no-data {
+            text-align: center;
+            padding: 40px;
+            color: #b3bfff;
+        }
+
+        .no-data i {
+            font-size: 3em;
+            margin-bottom: 20px;
+            color: #64c8ff;
+            opacity: 0.5;
+        }
+
+        @media (max-width: 768px) {
+            .header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .detections-table {
+                font-size: 0.9em;
+            }
+
+            .detections-table th,
+            .detections-table td {
+                padding: 10px;
+            }
+
+            .filters {
+                grid-template-columns: 1fr;
+            }
+
+            .filter-buttons {
+                flex-direction: column;
+            }
+
+            .filter-btn,
+            .reset-btn {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <h1><i class="fas fa-exclamation-circle"></i> Object Detection Report</h1>
+            <a href="{% url 'home' %}" class="back-btn">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+
+        <!-- Statistics -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <h3>Total Detections</h3>
+                <div class="stat-number">{{ total_detections }}</div>
+            </div>
+            {% for summary in object_type_summary %}
+            <div class="stat-card">
+                <h3>{{ summary.object_type|title }}</h3>
+                <div class="stat-number">{{ summary.count }}</div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Filters -->
+        <form method="get" class="filters">
+            <div class="filter-group">
+                <label for="object_type">Object Type</label>
+                <select name="object_type" id="object_type">
+                    <option value="">All Types</option>
+                    {% for key, label in object_types %}
+                    <option value="{{ key }}" {% if request.GET.object_type == key %}selected{% endif %}>{{ label }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label for="from_date">From Date</label>
+                <input type="datetime-local" name="from_date" id="from_date" value="{{ request.GET.from_date }}">
+            </div>
+
+            <div class="filter-group">
+                <label for="to_date">To Date</label>
+                <input type="datetime-local" name="to_date" id="to_date" value="{{ request.GET.to_date }}">
+            </div>
+
+            <div class="filter-buttons">
+                <button type="submit" class="filter-btn">
+                    <i class="fas fa-search"></i> Filter
+                </button>
+                <a href="{% url 'object_detection_report' %}" class="reset-btn">
+                    <i class="fas fa-redo"></i> Reset
+                </a>
+            </div>
+        </form>
+
+        <!-- Detections Table -->
+        {% if detections %}
+        <table class="detections-table">
+            <thead>
+                <tr>
+                    <th><i class="fas fa-id-badge"></i> ID</th>
+                    <th><i class="fas fa-box"></i> Object Type</th>
+                    <th><i class="fas fa-calendar"></i> Detected At</th>
+                    <th><i class="fas fa-camera"></i> Camera</th>
+                    <th><i class="fas fa-chart-pie"></i> Confidence</th>
+                    <th><i class="fas fa-map-marker-alt"></i> Location</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for detection in detections %}
+                <tr>
+                    <td>#{{ detection.id }}</td>
+                    <td>
+                        <span class="object-badge badge-{{ detection.object_type }}">
+                            <i class="fas fa-{% if detection.object_type == 'mobile_phone' %}mobile-alt{% elif detection.object_type == 'laptop' %}laptop{% elif detection.object_type == 'tablet' %}tablet-alt{% elif detection.object_type == 'smartwatch' %}watch{% elif detection.object_type == 'headphones' %}headphones{% elif detection.object_type == 'camera' %}camera{% else %}cube{% endif %}"></i>
+                            {{ detection.get_object_type_display }}
+                        </span>
+                    </td>
+                    <td>{{ detection.date_detected|date:"M d, Y H:i" }}</td>
+                    <td>{{ detection.camera_configuration.name|default:"Unknown" }}</td>
+                    <td>
+                        <div class="confidence-bar">
+                            <div class="confidence-fill" style="width: {{ detection.confidence_score|multiply:100 }}%"></div>
+                        </div>
+                        {{ detection.confidence_score|floatformat:2 }}
+                    </td>
+                    <td>
+                        {% if detection.location_x and detection.location_y %}
+                        <small>X: {{ detection.location_x }}, Y: {{ detection.location_y }}</small>
+                        {% else %}
+                        <small><em>N/A</em></small>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <div class="no-data">
+            <i class="fas fa-inbox"></i>
+            <h2>No Detections Found</h2>
+            <p>No prohibited objects have been detected in the classroom yet.</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <script>
+        // Add a custom template filter to multiply (for confidence bar)
+    </script>
+</body>
+</html>

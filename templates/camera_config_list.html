@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Camera Configurations</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f2e 0%, #1a1a4d 50%, #0f0f2e 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #ffffff;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(20, 20, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5em;
+            margin-bottom: 35px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 35px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-create:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.5);
+        }
+
+        .btn-home {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.3), rgba(100, 200, 255, 0.1));
+            color: #64c8ff;
+            border-color: #64c8ff;
+        }
+
+        .btn-home:hover {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.5), rgba(100, 200, 255, 0.3));
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(100, 200, 255, 0.3);
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: linear-gradient(to bottom, rgba(255, 215, 0, 0.05), rgba(100, 200, 255, 0.05));
+        }
+
+        th {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(100, 200, 255, 0.2));
+            color: #ffd700;
+            padding: 18px 20px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 1.05em;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        td {
+            padding: 16px 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            vertical-align: middle;
+            font-size: 0.95em;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .actions {
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 8px 14px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.85em;
+            transition: all 0.3s ease;
+            border: 1px solid;
+        }
+
+        .edit-link {
+            background: rgba(100, 200, 255, 0.2);
+            color: #64c8ff;
+            border-color: #64c8ff;
+        }
+
+        .edit-link:hover {
+            background: rgba(100, 200, 255, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(100, 200, 255, 0.3);
+        }
+
+        .delete-link {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+
+        .delete-link:hover {
+            background: rgba(255, 107, 107, 0.4);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .empty-message {
+            text-align: center;
+            padding: 60px 20px;
+            color: #b0b0ff;
+            font-size: 1.1em;
+        }
+
+        .empty-message i {
+            font-size: 3em;
+            color: #ffd700;
+            display: block;
+            margin-bottom: 15px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            th, td {
+                padding: 12px 10px;
+                font-size: 0.9em;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-video"></i> Camera Configurations</h1>
+
+        <div class="button-group">
+            <a href="{% url 'camera_config_create' %}" class="btn btn-create">
+                <i class="fas fa-plus"></i> Add New Configuration
+            </a>
+            <a href="{% url 'home' %}" class="btn btn-home">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
+        </div>
+
+        <div class="table-wrapper">
+            {% if configs %}
+            <table>
+                <thead>
+                    <tr>
+                        <th><i class="fas fa-tag"></i> Name</th>
+                        <th><i class="fas fa-camera"></i> Camera Source</th>
+                        <th><i class="fas fa-sliders-h"></i> Threshold</th>
+                        <th><i class="fas fa-cog"></i> Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for config in configs %}
+                    <tr>
+                        <td><strong>{{ config.name }}</strong></td>
+                        <td>{{ config.camera_source }}</td>
+                        <td>
+                            <span style="background: rgba(100, 200, 255, 0.2); padding: 6px 12px; border-radius: 6px; color: #64c8ff;">
+                                {{ config.threshold }}
+                            </span>
+                        </td>
+                        <td class="actions">
+                            <a href="{% url 'camera_config_update' config.id %}" class="action-link edit-link">
+                                <i class="fas fa-edit"></i> Edit
+                            </a>
+                            <a href="{% url 'camera_config_delete' config.id %}" class="action-link delete-link">
+                                <i class="fas fa-trash"></i> Delete
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-message">
+                <i class="fas fa-inbox"></i>
+                <p>No camera configurations yet. <br><a href="{% url 'camera_config_create' %}" style="color: #ffd700; text-decoration: underline;">Create one now!</a></p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

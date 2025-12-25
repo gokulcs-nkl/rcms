@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Authorize Student | AI Face Attendance</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f2e 0%, #1a1a4d 50%, #0f0f2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: rgba(20, 20, 50, 0.95);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 50px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.4);
+            animation: slideIn 0.4s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .header-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 40px;
+            color: #0f0f2e;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.3);
+        }
+
+        h1 {
+            font-size: 2em;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 10px;
+            font-weight: 800;
+        }
+
+        .subtitle {
+            color: #b3bfff;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .student-card {
+            background: rgba(255, 215, 0, 0.08);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 35px;
+        }
+
+        .student-image {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+
+        .student-image img {
+            width: 120px;
+            height: 120px;
+            border-radius: 12px;
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .detail-row:last-child {
+            border-bottom: none;
+        }
+
+        .detail-label {
+            color: #ffed4e;
+            font-weight: 600;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .detail-label i {
+            width: 20px;
+            text-align: center;
+            color: #64c8ff;
+        }
+
+        .detail-value {
+            color: #d7e6ff;
+            font-weight: 500;
+            text-align: right;
+        }
+
+        .authorization-section {
+            background: rgba(100, 200, 255, 0.08);
+            border: 2px solid rgba(100, 200, 255, 0.3);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+
+        .authorization-title {
+            color: #64c8ff;
+            font-weight: 700;
+            margin-bottom: 20px;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .authorization-title i {
+            font-size: 1.3em;
+        }
+
+        .toggle-switch {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .checkbox-wrapper {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .checkbox-container {
+            position: relative;
+            width: 60px;
+            height: 34px;
+        }
+
+        .checkbox-container input {
+            display: none;
+        }
+
+        .toggle-label {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 34px;
+            transition: all 0.3s;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .toggle-label::after {
+            content: '';
+            position: absolute;
+            width: 26px;
+            height: 26px;
+            border-radius: 50%;
+            background-color: #fff;
+            top: 2px;
+            left: 2px;
+            transition: all 0.3s;
+        }
+
+        .checkbox-container input:checked + .toggle-label {
+            background-color: rgba(100, 200, 255, 0.6);
+            border-color: rgba(100, 200, 255, 0.8);
+        }
+
+        .checkbox-container input:checked + .toggle-label::after {
+            transform: translateX(26px);
+            background-color: #90ff90;
+        }
+
+        .toggle-text {
+            color: #d7e6ff;
+            font-weight: 600;
+            font-size: 1em;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 700;
+            text-align: center;
+            min-width: 120px;
+        }
+
+        .status-authorized {
+            background: rgba(144, 255, 144, 0.2);
+            color: #90ff90;
+        }
+
+        .status-unauthorized {
+            background: rgba(255, 107, 107, 0.2);
+            color: #ff6b6b;
+        }
+
+        .form-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        button[type="submit"],
+        .btn-cancel {
+            padding: 14px 24px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95em;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Poppins', sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        button[type="submit"] {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #0f0f2e;
+        }
+
+        button[type="submit"]:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 215, 0, 0.3);
+        }
+
+        button[type="submit"]:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-cancel {
+            background: rgba(255, 255, 255, 0.1);
+            color: #d7e6ff;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-cancel:hover {
+            background: rgba(255, 255, 255, 0.15);
+            border-color: rgba(255, 255, 255, 0.4);
+        }
+
+        .bottom-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 25px;
+            padding-top: 25px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .action-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 16px;
+            background: rgba(100, 200, 255, 0.1);
+            border: 1px solid rgba(100, 200, 255, 0.3);
+            border-radius: 8px;
+            color: #64c8ff;
+            text-decoration: none;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .action-link:hover {
+            background: rgba(100, 200, 255, 0.2);
+            border-color: rgba(100, 200, 255, 0.5);
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+
+            h1 {
+                font-size: 1.6em;
+            }
+
+            .form-actions {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-row {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+
+            .detail-value {
+                text-align: left;
+            }
+
+            .bottom-actions {
+                flex-direction: column;
+            }
+
+            .action-link {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <div class="header-icon">
+                <i class="fas fa-user-check"></i>
+            </div>
+            <h1>Authorize Student</h1>
+            <p class="subtitle">Enable or disable student access and attendance</p>
+        </div>
+
+        <!-- Student Card -->
+        <div class="student-card">
+            {% if student.image %}
+            <div class="student-image">
+                <img src="{{ student.image.url }}" alt="{{ student.name }}">
+            </div>
+            {% endif %}
+
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fas fa-user"></i> Name
+                </div>
+                <div class="detail-value">{{ student.name }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fas fa-envelope"></i> Email
+                </div>
+                <div class="detail-value">{{ student.email }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fas fa-phone"></i> Phone
+                </div>
+                <div class="detail-value">{{ student.phone_number }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fas fa-school"></i> Class
+                </div>
+                <div class="detail-value">{{ student.student_class }}</div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">
+                    <i class="fas fa-info-circle"></i> Status
+                </div>
+                <div class="detail-value">
+                    {% if student.authorized %}
+                    <span class="status-badge status-authorized">
+                        <i class="fas fa-check-circle"></i> Authorized
+                    </span>
+                    {% else %}
+                    <span class="status-badge status-unauthorized">
+                        <i class="fas fa-times-circle"></i> Unauthorized
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Authorization Section -->
+        <form method="post">
+            {% csrf_token %}
+            
+            <div class="authorization-section">
+                <div class="authorization-title">
+                    <i class="fas fa-shield-alt"></i> Authorization Status
+                </div>
+
+                <div class="toggle-switch">
+                    <div class="checkbox-wrapper">
+                        <div class="checkbox-container">
+                            <input type="checkbox" id="authorized" name="authorized" {% if student.authorized %}checked{% endif %}>
+                            <label for="authorized" class="toggle-label"></label>
+                        </div>
+                        <span class="toggle-text">
+                            {% if student.authorized %}
+                            Allow Access
+                            {% else %}
+                            Restrict Access
+                            {% endif %}
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Form Actions -->
+            <div class="form-actions">
+                <button type="submit">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+                <a href="{% url 'student-list' %}" class="btn-cancel">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+            </div>
+        </form>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-actions">
+            <a href="{% url 'student-list' %}" class="action-link">
+                <i class="fas fa-list"></i> Back to List
+            </a>
+            <a href="{% url 'student-detail' pk=student.pk %}" class="action-link">
+                <i class="fas fa-eye"></i> View Details
+            </a>
+        </div>
+    </div>
+
+    <script>
+        // Update toggle text on change
+        const checkbox = document.getElementById('authorized');
+        const toggleText = document.querySelector('.toggle-text');
+
+        checkbox.addEventListener('change', function() {
+            toggleText.textContent = this.checked ? 'Allow Access' : 'Restrict Access';
+        });
+    </script>

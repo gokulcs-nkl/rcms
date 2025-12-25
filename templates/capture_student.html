@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Registration</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0f0f2e 0%, #1a1a4d 50%, #0f0f2e 100%);
+            font-family: 'Poppins', sans-serif;
+            color: #ffffff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 650px;
+        }
+
+        .card {
+            background: rgba(20, 20, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            padding: 40px;
+        }
+
+        .card-body {
+            text-align: center;
+        }
+
+        h2 {
+            margin-bottom: 10px;
+            font-size: 2.5em;
+            font-weight: 800;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: 1px;
+        }
+
+        .subtitle {
+            font-size: 1em;
+            color: #b0b0ff;
+            margin-bottom: 30px;
+            font-weight: 300;
+        }
+
+        video {
+            width: 100%;
+            height: auto;
+            border-radius: 15px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            max-width: 100%;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.2);
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .image-preview {
+            display: none;
+            margin-top: 20px;
+            border-radius: 15px;
+            border: 2px solid rgba(100, 200, 255, 0.3);
+            max-width: 100%;
+            box-shadow: 0 10px 30px rgba(100, 200, 255, 0.2);
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+            text-align: left;
+        }
+
+        .form-group label {
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 8px;
+            display: block;
+            font-size: 0.95em;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .button-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 28px;
+            border-radius: 10px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(255, 215, 0, 0.5);
+        }
+
+        .back-button {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.3), rgba(100, 200, 255, 0.1));
+            color: #64c8ff;
+            border: 1px solid #64c8ff;
+        }
+
+        .back-button:hover {
+            background: linear-gradient(135deg, rgba(100, 200, 255, 0.5), rgba(100, 200, 255, 0.3));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(100, 200, 255, 0.3);
+        }
+
+        .info-section {
+            background: rgba(100, 200, 255, 0.1);
+            border-left: 3px solid #64c8ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 25px;
+            text-align: left;
+            font-size: 0.9em;
+            color: #e0e0e0;
+            line-height: 1.6;
+        }
+
+        .info-section i {
+            color: #64c8ff;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                padding: 25px;
+            }
+
+            h2 {
+                font-size: 1.8em;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-body">
+                <h2><i class="fas fa-user-plus"></i> Register</h2>
+                <p class="subtitle">Capture your photo and complete registration</p>
+                
+                <video id="video" autoplay></video>
+                
+                <form id="registrationForm" method="post" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <div class="form-group">
+                        <label for="name"><i class="fas fa-user"></i> Name:</label>
+                        <input type="text" class="form-control" id="name" name="name" placeholder="Enter your full name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email"><i class="fas fa-envelope"></i> Email:</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter your email address" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="phone_number"><i class="fas fa-phone"></i> Phone Number:</label>
+                        <input type="text" class="form-control" id="phone_number" name="phone_number" placeholder="Enter your phone number" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="student_class"><i class="fas fa-book"></i> Class:</label>
+                        <input type="text" class="form-control" id="student_class" name="student_class" placeholder="e.g., Class 10-A" required>
+                    </div>
+
+                    <canvas id="canvas" width="640" height="480" style="display: none;"></canvas>
+                    <input type="hidden" id="image_data" name="image_data">
+                    <img id="imagePreview" class="image-preview" src="" alt="Captured Image Preview" />
+                    
+                    <div class="button-group">
+                        <button type="submit" class="btn btn-success" id="submitBtn">
+                            <i class="fas fa-check"></i> Submit Registration
+                        </button>
+                        <a href="{% url 'home' %}" class="btn back-button">
+                            <i class="fas fa-arrow-left"></i> Back to Home
+                        </a>
+                    </div>
+                </form>
+
+                <div class="info-section">
+                    <i class="fas fa-info-circle"></i>
+                    <strong>Instructions:</strong><br>
+                    Make sure your face is clearly visible in the camera before submitting. Your photo will be used for face recognition during attendance marking.
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const video = document.getElementById('video');
+        const canvas = document.getElementById('canvas');
+        const imageDataInput = document.getElementById('image_data');
+        const registrationForm = document.getElementById('registrationForm');
+        const imagePreview = document.getElementById('imagePreview');
+
+        // Access the webcam
+        navigator.mediaDevices.getUserMedia({ video: true })
+            .then(stream => {
+                video.srcObject = stream;
+                video.play();
+            })
+            .catch(err => {
+                console.error("Error accessing the camera: ", err);
+                alert("Unable to access camera. Please check permissions.");
+            });
+
+        // Capture the image when the form is submitted
+        registrationForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height);
+            const dataURL = canvas.toDataURL('image/jpeg');
+            imageDataInput.value = dataURL;
+
+            // Show the captured image preview
+            imagePreview.src = dataURL;
+            imagePreview.style.display = 'block';
+
+            // Submit the form programmatically
+            registrationForm.submit();
+        });
+    </script>
+</body>
+
+</html>

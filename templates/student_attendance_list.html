@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Student Attendance List</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f0f2e 0%, #1a1a4d 50%, #0f0f2e 100%);
+            color: #ffffff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h2.heading {
+            text-align: center;
+            font-size: 2.5em;
+            margin: 30px 0;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 800;
+            letter-spacing: 1px;
+        }
+
+        .filter-section {
+            background: rgba(20, 20, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        .filter-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: end;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .filter-group label {
+            display: block;
+            font-weight: 600;
+            color: #ffd700;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .filter-group input {
+            width: 100%;
+            padding: 12px 15px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 8px;
+            color: #ffffff;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .filter-group input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #ffd700;
+            box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+        }
+
+        .filter-group input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .btn-search {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.4);
+        }
+
+        .btn-download {
+            padding: 12px 25px;
+            background: linear-gradient(135deg, rgba(144, 255, 144, 0.3), rgba(144, 255, 144, 0.1));
+            color: #90ff90;
+            border: 1px solid #90ff90;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+        }
+
+        .btn-download:hover {
+            background: linear-gradient(135deg, rgba(144, 255, 144, 0.5), rgba(144, 255, 144, 0.3));
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(144, 255, 144, 0.4);
+        }
+
+        .table-wrapper {
+            background: rgba(20, 20, 50, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 20px;
+            overflow-x: auto;
+            box-shadow: 0 15px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            flex-grow: 1;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            background: linear-gradient(to bottom, rgba(255, 215, 0, 0.05), rgba(100, 200, 255, 0.05));
+        }
+
+        thead th {
+            background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(100, 200, 255, 0.2));
+            color: #ffd700;
+            padding: 18px 15px;
+            text-align: left;
+            font-weight: 700;
+            font-size: 0.95em;
+            border-bottom: 2px solid rgba(255, 215, 0, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            white-space: nowrap;
+        }
+
+        tbody td {
+            padding: 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            vertical-align: middle;
+            font-size: 0.9em;
+        }
+
+        tbody tr {
+            transition: all 0.3s ease;
+        }
+
+        tbody tr:hover {
+            background: rgba(255, 215, 0, 0.1);
+            transform: translateX(5px);
+        }
+
+        .student-image {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.3);
+        }
+
+        .time-badge {
+            display: inline-block;
+            padding: 8px 12px;
+            background: rgba(100, 200, 255, 0.2);
+            color: #64c8ff;
+            border-radius: 6px;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .no-checkout {
+            color: #ff6b6b;
+            font-weight: 600;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #ffd700, #ffed4e);
+            color: #000;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .back-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(255, 215, 0, 0.4);
+        }
+
+        @media (max-width: 768px) {
+            .filter-container {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                min-width: 100%;
+            }
+
+            h2.heading {
+                font-size: 1.8em;
+            }
+
+            .table-wrapper {
+                overflow-x: scroll;
+            }
+
+            thead th {
+                font-size: 0.8em;
+                padding: 12px 10px;
+            }
+
+            tbody td {
+                font-size: 0.8em;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h2 class="heading"><i class="fas fa-calendar-check"></i> Attendance Records</h2>
+    
+    <div class="filter-section">
+        <form method="get" class="filter-container">
+            <div class="filter-group">
+                <label><i class="fas fa-search"></i> Search Student</label>
+                <input type="text" name="search" placeholder="Search by name..." value="{{ search_query }}">
+            </div>
+            <div class="filter-group">
+                <label><i class="fas fa-calendar"></i> Filter by Date</label>
+                <input type="date" name="attendance_date" value="{{ date_filter }}">
+            </div>
+            <button class="btn-search" type="submit">
+                <i class="fas fa-search"></i> Search & Filter
+            </button>
+            <a href="{% url 'export_attendance_csv' %}?search={{ search_query }}&attendance_date={{ date_filter }}" class="btn-download">
+                <i class="fas fa-download"></i> Download CSV
+            </a>
+        </form>
+    </div>
+    
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th><i class="fas fa-image"></i> Image</th>
+                    <th><i class="fas fa-user"></i> Student Name</th>
+                    <th><i class="fas fa-calendar-alt"></i> Date</th>
+                    <th><i class="fas fa-sign-in-alt"></i> Check-In</th>
+                    <th><i class="fas fa-sign-out-alt"></i> Check-Out</th>
+                    <th><i class="fas fa-clock"></i> Duration</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for data in student_attendance_data %}
+                    {% for attendance in data.attendance_records %}
+                    <tr>
+                        <td>
+                            {% if data.student.image %}
+                                <img src="{{ data.student.image.url }}" alt="{{ data.student.name }}" class="student-image">
+                            {% else %}
+                                <div style="width: 45px; height: 45px; background: rgba(255, 215, 0, 0.2); border-radius: 50%; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-user" style="color: #ffd700;"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ data.student.name }}</strong></td>
+                        <td>{{ attendance.date }}</td>
+                        <td><span class="time-badge">{{ attendance.check_in_time|date:"h:i A" }}</span></td>
+                        <td>
+                            {% if attendance.check_out_time %}
+                                <span class="time-badge" style="background: rgba(144, 255, 144, 0.2); color: #90ff90;">{{ attendance.check_out_time|date:"h:i A" }}</span>
+                            {% else %}
+                                <span class="no-checkout"><i class="fas fa-hourglass-end"></i> Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if attendance.check_in_time and attendance.check_out_time %}
+                                <strong>{{ attendance.calculate_duration }}</strong>
+                            {% else %}
+                                <span style="color: #ffaa44;">Not Complete</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <div class="footer">
+        <a href="/" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+    </div>
+</div>
+</body>
+</html>
