@@ -6,8 +6,9 @@ __pycache__/
 *.sqlite3
 
 # Django
-/db.sqlite3
-/media/
+# Keep DB and media tracked for this repo
+# /db.sqlite3
+# /media/
 /staticfiles/
 
 # Environments
